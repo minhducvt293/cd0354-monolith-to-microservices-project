@@ -1,46 +1,46 @@
-# Workflow to ensure whenever a Github PR is submitted, 
-# a JIRA ticket gets created automatically. 
-name: Manual Workflow
+name: build and push dockers
 
 # Controls when the action will run. 
 on:
   # Triggers the workflow on pull request events but only for the master branch
-  pull_request_target:
-    types: [opened, reopened]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   test-transition-issue:
-    name: Convert Github Issue to Jira Issue
+    name: build docker and push images
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@master
 
     - name: Login
-      uses: atlassian/gajira-login@master
-      env:
-        JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-        JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-        
-    - name: Create NEW JIRA ticket
-      id: create
-      uses: atlassian/gajira-create@master
+      uses: docker/login-action@v1
       with:
-        project: CONUPDATE
-        issuetype: Task
-        summary: |
-          Github PR nd9990 - Cloud Developer  | Repo: ${{ github.repository }}  | PR# ${{github.event.number}}
-        description: |
-           Repo link: https://github.com/${{ github.repository }}   
-           PR no. ${{ github.event.pull_request.number }} 
-           PR title: ${{ github.event.pull_request.title }}  
-           PR description: ${{ github.event.pull_request.description }}  
-           In addition, please resolve other issues, if any. 
-        fields: '{"components": [{"name":"nd9990 - Cloud Developer"}], "customfield_16449":"https://classroom.udacity.com/", "customfield_16450":"Resolve the PR", "priority":{"id": "4"}}'
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASS }}
+        
+    - name: build docker and tag
+      run: |
+        export NODE_OPTIONS=--openssl-legacy-provider
+        export POSTGRES_USERNAME="postgres"
+        export POSTGRES_PASSWORD="12345678"
+        export URL="a791c7101e2f645bdb67c51025d7ec84-737106828.us-east-1.elb.amazonaws.com"
+        export AWS_BUCKET="ductm32"
+        export JWT_SECRET="JWT_SECRET_random_ductm32"
+        export AWS_PROFILE="default"
+        export AWS_REGION="us-east-1"
+        export POSTGRES_HOST="postgres.cwoczgdqw48o.us-east-1.rds.amazonaws.com"
+        export POSTGRES_DB="postgres"
+        docker build -t udagram-frontend ./udagram-frontend
+        docker tag udagram-frontend minhducvt293/udagram-frontend:v4
+        docker push minhducvt293/udagram-frontend:v4
+        docker build -t udagram-api-feed ./udagram-api-feed
+        docker tag udagram-api-feed minhducvt293/udagram-api-feed:v4
+        docker push minhducvt293/udagram-api-feed:v4
+        docker build -t udagram-api-user ./udagram-api-user
+        docker tag udagram-api-user minhducvt293/udagram-api-user:v4
+        docker push minhducvt293/udagram-api-user:v4
+        docker build -t reverseproxy ./udagram-reverseproxy
+        docker tag reverseproxy minhducvt293/reverseproxy:v4
+        docker push minhducvt293/reverseproxy:v4
 
-    - name: Log created issue
-      run: echo "Issue ${{ steps.create.outputs.issue }} was created"
