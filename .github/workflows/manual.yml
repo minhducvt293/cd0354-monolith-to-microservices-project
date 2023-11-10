@@ -22,6 +22,15 @@ jobs:
     - name: build docker and tag
       run: |
         export NODE_OPTIONS=--openssl-legacy-provider
+        export POSTGRES_USERNAME="cG9zdGdyZXM="
+        export POSTGRES_PASSWORD="MTIzNDU2Nzg="
+        export URL="a791c7101e2f645bdb67c51025d7ec84-737106828.us-east-1.elb.amazonaws.com"
+        export AWS_BUCKET="ductm32"
+        export JWT_SECRET="JWT_SECRET_random_ductm32"
+        export AWS_PROFILE="default"
+        export AWS_REGION="us-east-1"
+        export POSTGRES_HOST="ductm34.cwoczgdqw48o.us-east-1.rds.amazonaws.com"
+        export POSTGRES_DB="postgres"
         docker build -t udagram-frontend ./udagram-frontend
         docker tag udagram-frontend minhducvt293/udagram-frontend:v3
         docker push minhducvt293/udagram-frontend:v3
