@@ -4,7 +4,7 @@ metadata:
   name: env-config
   namespace: default
 data:
-  POSTGRES_HOST: "ductm34.cwoczgdqw48o.us-east-1.rds.amazonaws.com"
+  POSTGRES_HOST: "postgres.cwoczgdqw48o.us-east-1.rds.amazonaws.com"
   POSTGRES_DB : "postgres"
   AWS_BUCKET: "ductm32"	
   AWS_REGION: "us-east-1"
