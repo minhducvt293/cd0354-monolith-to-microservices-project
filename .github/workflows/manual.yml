@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Login
-      uses: docker/logins-action@v1
+      uses: docker/login-action@v1
       env:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASS }}
