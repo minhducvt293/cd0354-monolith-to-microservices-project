@@ -22,8 +22,8 @@ jobs:
     - name: build docker and tag
       run: |
         export NODE_OPTIONS=--openssl-legacy-provider
-        export POSTGRES_USERNAME="cG9zdGdyZXM="
-        export POSTGRES_PASSWORD="MTIzNDU2Nzg="
+        export POSTGRES_USERNAME="postgres"
+        export POSTGRES_PASSWORD="12345678"
         export URL="a791c7101e2f645bdb67c51025d7ec84-737106828.us-east-1.elb.amazonaws.com"
         export AWS_BUCKET="ductm32"
         export JWT_SECRET="JWT_SECRET_random_ductm32"
