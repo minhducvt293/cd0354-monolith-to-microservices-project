@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: udagram-reverseproxy
-        image: minhducvt293/reverseproxy:v1
+        image: minhducvt293/reverseproxy:v2
         imagePullPolicy: Always
         resources:
           requests:
