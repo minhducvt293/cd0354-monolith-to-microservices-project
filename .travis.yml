@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 15
+  - 13
 services:
   - docker
 script:
@@ -13,8 +13,10 @@ script:
   - docker tag udagram-frontend minhducvt293/udagram-frontend:v5
   - docker build -t reverseproxy ./udagram-reverseproxy
   - docker tag reverseproxy minhducvt293/reverseproxy:v5
-deploy:
-  provider: script
-  script: bash docker_push.sh
-  on:
-    branch: main
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push minhducvt293/udagram-api-feed:v5
+  - docker push minhducvt293/udagram-api-user:v5
+  - docker push minhducvt293/udagram-frontend:v5
+  - docker push minhducvt293/reverseproxy:v5
